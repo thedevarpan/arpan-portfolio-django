@@ -1,0 +1,35 @@
+Blog Category 
+Blog Title
+blog cover
+Blog content 
+image1
+image2
+quotes
+quotes author
+tags
+created Author
+updated at
+
+
+Author DP
+Author name
+created Author
+updated at
+** numnber of comments
+
+//comments 
+name 
+email 
+message 
+
+//newsletter 
+email
+
+
+
+//features
+resend verification link
+verification token expiration time
+
+forget password
+forget password link expiration time
