@@ -120,17 +120,53 @@
                             </div>
                         </div>
 
+                        {% comment %} <div class="ml-auto">
+                            <div class="share-icon flex">
+                                <div class="valign">
+                                    <span>Feedback:</span>
+                                </div>
+                                <div>
+                                    <a href=""><i class="fa-regular fa-thumbs-up"><span class="ml-4">1</span></i></a>
+                                    <a href=""><i class="fa-regular fa-thumbs-down"><span class="ml-4">1</span></i></a>
+                                </div>
+                            </div>
+                        </div> {% endcomment %}
+
+
+
                         <div class="ml-auto">
                             <div class="share-icon flex">
                                 <div class="valign">
                                     <span>Feedback:</span>
                                 </div>
                                 <div>
-                                    <a href=""><i class="fa-regular fa-thumbs-up"></i></a>
-                                    <a href=""><i class="fa-regular fa-thumbs-down"></i></a>
+                                    {% if user.is_authenticated %}
+                                    <form id="like-form" action="{% url 'like_blog' blog.slug %}" method="post">
+                                        {% csrf_token %}
+                                        <a href="#" id="like-btn" data-slug="{{ blog.slug }}">
+                                            <i class="fa-regular fa-thumbs-up"><span class="ml-4" id="like-count">{{ blog.likes }}</span></i>
+                                        </a>
+                                    </form>
+
+
+                                    <form id="dislike-form" action="{% url 'dislike_blog' blog.slug %}" method="post">
+                                        {% csrf_token %}
+                                        <a href="#" id="dislike-btn" data-slug="{{ blog.slug }}">
+                                            <i class="fa-regular fa-thumbs-down"><span class="ml-4" id="dislike-count">{{ blog.dislikes }}</span></i>
+                                        </a>
+                                    </form>
+                                    {% else %}
+                                    <a href="{% url 'Login' %}">
+                                        <i class="fa-solid fa-user"></i></i>
+                                    </a>
+
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
+
+
+
 
                         <div class="ml-auto">
                             <div class="share-icon flex">

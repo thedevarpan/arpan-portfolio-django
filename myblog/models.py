@@ -52,13 +52,25 @@ class Blog(models.Model):
     quotes = models.TextField()
     tags = models.ManyToManyField(Tag)
     slug = models.SlugField(max_length=500, null=True, blank=True, unique=True)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.blog_title} -- {self.blog_author}"
 
-    
+
+class BlogInteraction(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    like = models.BooleanField(default=False)
+    dislike = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(default=now)
+
+    class Meta:
+        unique_together = ('user', 'blog')  # Ensure each user can only interact with each blog once
+  
 
 class Comment(models.Model):
     sno = models.AutoField(primary_key=True)

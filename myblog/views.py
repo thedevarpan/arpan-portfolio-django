@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse
 from.models import *
+from django.http import JsonResponse
 
 from account.models import CustomUser
 
@@ -30,6 +31,124 @@ def BlogDetails(request, slug):
 
     params = {'blog': blog, 'prev_blog': prev_blog, 'next_blog': next_blog, 'recent_posts': recent_posts}
     return render(request, 'myblog/blog-details.html', params)
+
+
+
+
+# def like_blog(request, slug):
+#     if request.method == 'POST':
+#         blog = get_object_or_404(Blog, slug=slug)
+#         blog.likes += 1
+#         blog.save()
+#         return JsonResponse({'likes': blog.likes, 'dislikes': blog.dislikes})
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# def dislike_blog(request, slug):
+#     if request.method == 'POST':
+#         blog = get_object_or_404(Blog, slug=slug)
+#         blog.dislikes += 1
+#         blog.save()
+#         return JsonResponse({'likes': blog.likes, 'dislikes': blog.dislikes})
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+# def like_blog(request, slug):
+#     if request.method == 'POST':
+#         blog = get_object_or_404(Blog, slug=slug)
+#         user = request.user
+
+#         interaction, created = BlogInteraction.objects.get_or_create(user=user, blog=blog)
+
+#         if interaction.like:
+#             return JsonResponse({'error': 'You have already liked this post.'}, status=400)
+        
+#         if interaction.dislike:
+#             interaction.dislike = False
+#             blog.dislikes -= 1
+
+#         interaction.like = True
+#         blog.likes += 1
+#         interaction.save()
+#         blog.save()
+        
+#         return JsonResponse({'likes': blog.likes, 'dislikes': blog.dislikes})
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
+# def dislike_blog(request, slug):
+    if request.method == 'POST':
+        blog = get_object_or_404(Blog, slug=slug)
+        user = request.user
+
+        interaction, created = BlogInteraction.objects.get_or_create(user=user, blog=blog)
+
+        if interaction.dislike:
+            return JsonResponse({'error': 'You have already disliked this post.'}, status=400)
+        
+        if interaction.like:
+            interaction.like = False
+            blog.likes -= 1
+
+        interaction.dislike = True
+        blog.dislikes += 1
+        interaction.save()
+        blog.save()
+
+        return JsonResponse({'likes': blog.likes, 'dislikes': blog.dislikes})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
+def like_blog(request, slug):
+    if request.method == 'POST':
+        blog = get_object_or_404(Blog, slug=slug)
+        user = request.user
+
+        # Get or create the interaction object
+        interaction, created = BlogInteraction.objects.get_or_create(user=user, blog=blog)
+
+        # Check if user has already interacted
+        if interaction.like:
+            return JsonResponse({'error': 'You have already liked this post.'}, status=400)
+
+        if interaction.dislike:
+            # Remove dislike if exists
+            interaction.dislike = False
+            blog.dislikes -= 1
+
+        interaction.like = True
+        blog.likes += 1
+        interaction.save()
+        blog.save()
+        
+        return JsonResponse({'likes': blog.likes, 'dislikes': blog.dislikes})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+def dislike_blog(request, slug):
+    if request.method == 'POST':
+        blog = get_object_or_404(Blog, slug=slug)
+        user = request.user
+
+        # Get or create the interaction object
+        interaction, created = BlogInteraction.objects.get_or_create(user=user, blog=blog)
+
+        # Check if user has already interacted
+        if interaction.dislike:
+            return JsonResponse({'error': 'You have already disliked this post.'}, status=400)
+
+        if interaction.like:
+            # Remove like if exists
+            interaction.like = False
+            blog.likes -= 1
+
+        interaction.dislike = True
+        blog.dislikes += 1
+        interaction.save()
+        blog.save()
+
+        return JsonResponse({'likes': blog.likes, 'dislikes': blog.dislikes})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 
