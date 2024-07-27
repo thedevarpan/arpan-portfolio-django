@@ -146,6 +146,26 @@
                         <li class="nav-item">
                             <a class="nav-link" href="page-contact.html"><span class="rolling-text">Contact</span></a>
                         </li>
+
+
+                        {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="" role="button"
+                                aria-haspopup="true" aria-expanded="false"><span class="rolling-text">Account</span></a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="shop-list.html">Profile</a>
+                                <a class="dropdown-item" href="shop-product.html">Dashboard</a>
+                                <a class="dropdown-item" href="{% url 'Logout' %}">Logout</a>
+                            </div>
+                        </li>
+                        
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'Login' %}"><span class="rolling-text">Login</span></a>
+                        </li>
+                        {% endif %}
+
+
                     </ul>
                 </div>
 

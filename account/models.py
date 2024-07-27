@@ -9,7 +9,8 @@ class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(unique=True, max_length=80)
     phone_no = models.CharField(unique=True, max_length=14)
-    is_verifed = models.BooleanField(default=False)
+    # is_verifed = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
     activation_token = models.CharField(max_length=255, blank=True)
 
     USERNAME_FIELD = "email"

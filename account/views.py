@@ -24,6 +24,37 @@ def Account(request):
 
 
 #user signup
+# def Signup(request):
+#     try:
+#         if request.method == 'POST':
+#             email = request.POST.get('email')
+#             phone_no = request.POST.get('phone')
+#             password = request.POST.get('password')
+#             confirm_password = request.POST.get('confirm_password')
+
+#             if User.objects.filter(phone_no=phone_no).exists() or User.objects.filter(email=email).exists():
+#                 messages.warning(request, "An account with this email or phone number already exists.")
+
+#             if (password != confirm_password):
+#                 messages.warning(request, "Passwords are not same")
+            
+#                 try:
+#                     user = User.objects.create_user(phone_no=phone_no, email=email, password=password)
+#                     user.is_active = True
+#                     user.is_verified= False
+#                     user.save()
+#                     user.generate_activation_token() 
+#                     SendActivationMessage(request, user) #call the SendActivationMessage function
+#                     messages.success(request, "Account created successfully. Please check your email to activate your account.")
+#                     return redirect('/account/login')
+
+#                 except Exception as e:
+#                     messages.error(request, "Something went wrong. Try again.")
+#                     return redirect('/account/signup') 
+
+#     except Exception as e:
+#         messages.error(request, "Something went wrong. Try again.")
+#     return render(request, 'account/signup.html')
 def Signup(request):
     try:
         if request.method == 'POST':
@@ -34,25 +65,26 @@ def Signup(request):
 
             if User.objects.filter(phone_no=phone_no).exists() or User.objects.filter(email=email).exists():
                 messages.warning(request, "An account with this email or phone number already exists.")
+                return redirect('/account/signup')
 
             if (password != confirm_password):
                 messages.warning(request, "Passwords are not same")
+                return redirect('/account/signup')
             
-            try:
-                user = User.objects.create_user(phone_no=phone_no, email=email, password=password)
-                user.is_active = False
-                user.save()
-                user.generate_activation_token() 
-                SendActivationMessage(request, user) #call the SendActivationMessage function
-                messages.success(request, "Account created successfully. Please check your email to activate your account.")
-                return redirect('/account/login')
-
-            except Exception as e:
-                messages.error(request, "Something went wrong. Try again.")
-                return redirect('/account/signup') 
+     
+            user = User.objects.create_user(phone_no=phone_no, email=email, password=password)
+            user.is_active = True
+            user.is_verified= False
+            user.save()
+            user.generate_activation_token() 
+            SendActivationMessage(request, user) #call the SendActivationMessage function
+            messages.success(request, "Account created successfully. Please check your email to activate your account.")
+            return redirect('/account/login')
 
     except Exception as e:
-        messages.error(request, "Something went wrong. Try again.")
+        # messages.error(request, "Something went wrong. Try again.")
+                messages.error(request, f"Something went wrong. Try again. Error: {str(e)}")
+
     return render(request, 'account/signup.html')
 
 
@@ -61,11 +93,13 @@ def Signup(request):
 def Activate(request, pk, key):
     user = CustomUser.objects.filter(pk=pk).first()
     try:
-        if user and user.activation_token == key and not user.is_active:
-            user.is_active = True
-            user.is_verifed  = True
+        if user and user.activation_token == key:
+            # user.is_active = True
+            user.is_verified  = True
             user.activation_token = ""
             user.save()
+            login(request, user)
+            messages.success(request, "Your account has been activated and you are now logged in.")
         else:
             messages.error(request, "Invalid activation link or account already activated.")
     except:
@@ -74,34 +108,52 @@ def Activate(request, pk, key):
 
 
 
+def Login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(email = email, password = password)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request,"Login successful.")
+            return redirect("/")
+        else:
+            messages.error(request, 'You does not have an account or incorrect.')
+            return redirect('/account/login')
+        
+    return render(request, 'account/login.html')
+
+
+
 
 
 #login the existing account
-def Login(request):
-    try:
-        if request.method == 'POST':
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            user = authenticate(email = email, password = password)
+# def Login(request):
+#     try:
+#         if request.method == 'POST':
+#             email = request.POST.get('email')
+#             password = request.POST.get('password')
+#             user = authenticate(email = email, password = password)
 
-            if user is not None:
-                if user.is_verifed:
-                    login(request, user)
-                    messages.success(request,"Login successful.")
-                    return redirect("/")
-                else:
-                    messages.error(request, "Your account is not verified. Verify your account.")
-                    return redirect('/account/login')
+#             if user is not None:
+#                 login(request, user)
+#                 if user.is_verified:
+#                     messages.success(request,"Login successful.")
+#                     return redirect("/")
+#                 else:
+#                     messages.error(request, "Your account is not verified. Verify your account.")
+#                     return redirect('/account/login')
 
-            else:
-                messages.error(request, 'You does not have an account or incorrect.')
-                return redirect('/account/login')
+#             else:
+#                 messages.error(request, 'You does not have an account or incorrect.')
+#                 return redirect('/account/login')
 
-    except Exception as e:
-        messages.error(request, "Something went wrong. Try again.")
-        return redirect('/account/signup')
+#     except Exception as e:
+#         messages.error(request, "Something went wrong. Try again.")
+#         return redirect('/account/signup')
 
-    return render(request, 'account/login.html')
+#     return render(request, 'account/login.html')
 
 
 #hendle user profile page

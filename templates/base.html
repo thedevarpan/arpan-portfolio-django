@@ -180,6 +180,21 @@
 
         <!-- ==================== End Navbar ==================== -->
 
+        <!-- ==================== Unverified account alert ==================== -->
+
+
+
+        {% if user.is_authenticated and not user.is_verified  %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+            <strong>Account not verified!</strong> Please verify your account to access all features.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        
+
+
+        <!-- ==================== End Unverified account alert ==================== -->
+
 
 
 

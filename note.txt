@@ -1,20 +1,20 @@
-Blog Category 
-Blog Title
-blog cover
-Blog content 
-image1
-image2
-quotes
-quotes author
-tags
-created Author
-updated at
-
-
-Author DP
-Author name
-created Author
-updated at
+✅ Blog Category 
+✅ Blog Title
+✅ blog cover
+✅ Blog content 
+✅ image1
+✅ image2
+✅ quotes
+✅ quotes author
+✅ tags
+✅ created Author
+✅ updated at
+✅ 
+✅ 
+✅ Author DP
+✅ Author name
+✅ created Author
+✅ updated at
 ** numnber of comments
 
 //comments 
@@ -31,12 +31,13 @@ email
 resend verification link
 verification token expiration time
 
-forget password
+✅ forget password
 forget password link expiration time
 
 
 //restriction
-if user is not verified they can't access the like and comments
+✅ if user is not verified they can't access the like and comments
+if account is not verified a sticky alert will apper on whole website. after verify the account it will removed.
 
 //glitch 
 messages in frontentd on signup page
